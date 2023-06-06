@@ -1,0 +1,1357 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{k-nearest-neighbor}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{knn---k-nearest-neighbors-notes}{%
+\section{KNN - K-Nearest Neighbors
+Notes}\label{knn---k-nearest-neighbors-notes}}
+
+\hypertarget{what-is-k-nearest-neighbors}{%
+\subsection{What is K-Nearest
+Neighbors?}\label{what-is-k-nearest-neighbors}}
+
+\begin{itemize}
+\tightlist
+\item
+  K-Nearest Neighbors (KNN) is a supervised learning algorithm used for
+  classification and regression tasks.
+\item
+  KNN is a distance-based classifier that assumes smaller distances
+  between points indicate more similarity.
+\item
+  Each column in a dataset acts as a dimension, making it easy to
+  visualize with X and Y coordinates.
+\item
+  KNN requires labels for each point in the dataset to make predictions.
+\end{itemize}
+
+\hypertarget{the-algorithm-works-as-follows}{%
+\subsection{The algorithm works as
+follows:}\label{the-algorithm-works-as-follows}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Choose a point
+\item
+  Find the K-nearest points
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    K is a predefined user constant such as 1, 3, 5, or 11
+  \end{enumerate}
+\item
+  Predict a label for the current point:
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    Classification - Take the most common class of the k neighbors
+  \item
+    Regression - Take the average target metric of the k neighbors
+  \item
+    Both classification or regression can also be modified to use
+    weighted averages based on the distance of the neighbors
+  \end{enumerate}
+\end{enumerate}
+
+\hypertarget{fitting-the-model}{%
+\subsection{Fitting the model}\label{fitting-the-model}}
+
+\begin{itemize}
+\tightlist
+\item
+  KNN is a classifier that works differently from others.
+\item
+  It doesn't do much during the ``fit'' step.
+\item
+  KNN just stores training data and labels.
+\item
+  No distances are calculated during the ``fit'' step.
+\item
+  All the work is done during the ``predict'' step.
+\end{itemize}
+
+\hypertarget{making-predictions-with-k}{%
+\subsection{Making predictions with K}\label{making-predictions-with-k}}
+
+\begin{itemize}
+\tightlist
+\item
+  KNN algorithm predicts a class for a point during the ``predict''
+  step.
+\item
+  It calculates distances between the point and every point in the
+  training set.
+\item
+  K closest points (neighbors) are found and their labels are examined.
+\item
+  Each of the K-closest points gets to `vote' about the predicted class.
+\item
+  The majority wins and the algorithm predicts the point as whichever
+  class has the highest count among all of the k-nearest neighbors.
+\end{itemize}
+
+\hypertarget{distance-metrics}{%
+\subsection{Distance metrics}\label{distance-metrics}}
+
+\begin{itemize}
+\tightlist
+\item
+  Choosing the right distance metric is crucial when using the KNN
+  algorithm.
+\item
+  The distance metric significantly affects the algorithm's output.
+\item
+  Euclidean distance and Minkowski distance are the standard distance
+  metrics to consider.
+\end{itemize}
+
+\hypertarget{evaluating-model-performance}{%
+\subsection{Evaluating model
+performance}\label{evaluating-model-performance}}
+
+\begin{itemize}
+\tightlist
+\item
+  How to evaluate model performance depends on whether it's being used
+  for classification or regression tasks
+\item
+  KNN can be used for regression and binary/multicategorical
+  classification tasks
+\item
+  Evaluating classification performance for KNN is similar to any other
+  classification algorithm
+\item
+  You need a set of predictions and corresponding ground-truth labels to
+  compute evaluation metrics such as Precision, Recall, Accuracy,
+  F1-Score, etc.
+\end{itemize}
+
+\hypertarget{k-means}{%
+\subsubsection{K-means}\label{k-means}}
+
+\begin{itemize}
+\tightlist
+\item
+  K-means algorithm is unsupervised learning clustering algorithm
+  related to KNN.
+\item
+  K represents the number of clusters in K-means, not the number of
+  neighbors.
+\item
+  Unlike KNN, K-means is an iterative algorithm that repeats until
+  convergence.
+\item
+  K-means groups data points together using a distance metric to create
+  homogeneous groupings.
+\end{itemize}
+
+    \hypertarget{more-on-distance-metrics}{%
+\section{More On Distance Metrics:}\label{more-on-distance-metrics}}
+
+\begin{itemize}
+\tightlist
+\item
+  The K-Nearest Neighbors (KNN) algorithm is a foundational Supervised
+  Learning algorithm.
+\item
+  Distance metrics are used to determine how similar two objects are in
+  KNN.
+\item
+  Distance helps quantify similarity between objects.
+\item
+  Each column in a dataset is treated as a separate dimension in KNN.
+\item
+  There are multiple distance metrics available to calculate the
+  distance between data points.
+\item
+  Learning different distance metrics is important to evaluate how
+  similar or different data points are in KNN.
+\end{itemize}
+
+\hypertarget{manhattan-distance}{%
+\subsection{Manhattan distance}\label{manhattan-distance}}
+
+\begin{itemize}
+\tightlist
+\item
+  Manhattan distance is a distance metric that measures the distance
+  between two points traveling along the axes of a grid.
+\item
+  It calculates the number of units moved in the X and Y dimensions,
+  which is the same for the red, blue, and yellow lines in the image.
+\item
+  Manhattan distance can be remembered by thinking of the famous grid of
+  streets in Manhattan.
+\item
+  It can be calculated in any n-dimensional space by taking into account
+  the number of units moved in each dimension and summing them.
+\end{itemize}
+
+Here's the formula for Manhattan distance:
+
+\[ \large d(x,y) = \sum_{i=1}^{n}|x_i - y_i | \]
+
+Let's break this formula down:
+
+\begin{itemize}
+\tightlist
+\item
+  The left side of the equals sign measures the distance between two
+  points.
+\item
+  The right side of the equals sign calculates the absolute number of
+  units moved in each dimension and adds them up.
+\item
+  The \(\sum\) means the cumulative sum of each step in the calculation.
+\item
+  To calculate distance on a grid, movements in the opposite direction
+  must count, so the absolute difference between them is calculated.
+\item
+  Code can easily calculate the distance between two points stored as
+  tuples using a \texttt{for} loop.
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Locations of two points A and B}
+\PY{n}{A} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+\PY{n}{B} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+
+\PY{n}{manhattan\PYZus{}distance} \PY{o}{=} \PY{l+m+mi}{0}
+
+\PY{c+c1}{\PYZsh{} Use a for loop to iterate over each element}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Calculate the absolute difference and add it}
+    \PY{n}{manhattan\PYZus{}distance} \PY{o}{+}\PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{B}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{manhattan\PYZus{}distance}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+7
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{a-hint-on-turning-mathematical-notation-into-code}{%
+\subsubsection{A hint on turning mathematical notation into
+code}\label{a-hint-on-turning-mathematical-notation-into-code}}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\sum\) symbol in mathematical notation can be represented as a
+  \texttt{for} loop.
+\item
+  The math on the right of the \(\sum\) symbol tells you what the body
+  of the \texttt{for} loop should look like.
+\item
+  The numbers on the bottom and top of the \(\sum\) sign tell you the
+  starting and stopping indexes.
+\item
+  \(n\) in the Manhattan distance equation means ``length n'', the
+  length of the entire number of dimensions.
+\item
+  Be careful interpreting the starting dimensions, as computer
+  scientists start counting at 0 while mathematicians start at 1.
+\end{itemize}
+
+\hypertarget{euclidean-distance}{%
+\subsection{Euclidean distance}\label{euclidean-distance}}
+
+\begin{itemize}
+\tightlist
+\item
+  The Euclidean distance is the most common distance metric.
+\item
+  The Pythagorean theorem is at the heart of this metric.
+\item
+  The green line measures the Euclidean distance between two points by
+  moving in a straight line.
+\item
+  The length of the green line can be calculated using the Pythagorean
+  theorem.
+\item
+  The Euclidean distance between two points in the diagram above is
+  approximately 8.485.
+\end{itemize}
+
+\hypertarget{working-with-more-than-two-dimensions}{%
+\subsubsection{Working with more than two
+dimensions}\label{working-with-more-than-two-dimensions}}
+
+\begin{itemize}
+\tightlist
+\item
+  You can generalize the Euclidean distance equation to any number of
+  dimensions.
+\item
+  The formula for the Euclidean distance in a 3-dimensional space is:
+  \(d^2 = a^2 + b^2 + c^2.\)
+\item
+  The Euclidean distance equation is straightforward - for each
+  dimension, subtract one point's value from the other's, square it, and
+  add it to the running total.
+\end{itemize}
+
+\[ \large d(x,y) = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2} \]
+
+In Python, you can easily calculate Euclidean distance as follows:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{math} \PY{k+kn}{import} \PY{n}{sqrt}
+
+\PY{c+c1}{\PYZsh{} Locations of two points A and B}
+\PY{n}{A} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+\PY{n}{B} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+
+\PY{n}{euclidean\PYZus{}distance} \PY{o}{=} \PY{l+m+mi}{0}
+
+\PY{c+c1}{\PYZsh{} Use a for loop to iterate over each element}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Calculate the difference, square, and add it}
+    \PY{n}{euclidean\PYZus{}distance} \PY{o}{+}\PY{o}{=} \PY{p}{(}\PY{n}{A}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{B}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}
+
+\PY{c+c1}{\PYZsh{} Square root of the final result}
+\PY{n}{euclidean\PYZus{}distance} \PY{o}{=} \PY{n}{sqrt}\PY{p}{(}\PY{n}{euclidean\PYZus{}distance}\PY{p}{)}
+
+\PY{n}{euclidean\PYZus{}distance}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+4.58257569495584
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{itemize}
+\tightlist
+\item
+  Minkowski distance is a generalized distance metric across a Normed
+  Vector Space
+\item
+  A Normed Vector Space is a collection of space where each point has
+  been run through a function
+\item
+  Every vector must have a positive length and the zero vector outputs a
+  length of 0
+\item
+  Manhattan and Euclidean distances are special cases of Minkowski
+  distance
+\item
+  The function in Minkowski distance is just an exponent.
+\end{itemize}
+
+If you were to define a value for the exponent, you could say that:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Manhattan Distance is the sum of all side lengths to the first power}
+\NormalTok{manhattan\_distance }\OperatorTok{=}\NormalTok{ np.power((length\_side\_1}\OperatorTok{**}\DecValTok{1} \OperatorTok{+}\NormalTok{ length\_side\_2}\OperatorTok{**}\DecValTok{1} \OperatorTok{+}\NormalTok{ ... length\_side\_n}\OperatorTok{**}\DecValTok{1}\NormalTok{), }\DecValTok{1}\OperatorTok{/}\DecValTok{1}\NormalTok{) }
+
+\CommentTok{\# Euclidean Distance is the square root of the sum of all side lengths to the second power}
+\NormalTok{euclidean\_distance }\OperatorTok{=}\NormalTok{ np.power((length\_side\_1}\OperatorTok{**}\DecValTok{2} \OperatorTok{+}\NormalTok{ length\_side\_2}\OperatorTok{**}\DecValTok{2} \OperatorTok{+}\NormalTok{ ... length\_side\_n}\OperatorTok{**}\DecValTok{2}\NormalTok{), }\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{\# Minkowski Distance with a value of 3 would be the cube root of the sum of all side lengths to the third power}
+\NormalTok{minkowski\_distance\_3 }\OperatorTok{=}\NormalTok{ np.power((length\_side\_1}\OperatorTok{**}\DecValTok{3} \OperatorTok{+}\NormalTok{ length\_side\_2}\OperatorTok{**}\DecValTok{3} \OperatorTok{+}\NormalTok{ ... length\_side\_n}\OperatorTok{**}\DecValTok{3}\NormalTok{), }\DecValTok{1}\OperatorTok{/}\DecValTok{3}\NormalTok{)}
+
+\CommentTok{\# Minkowski Distance with a value of 5}
+\NormalTok{minkowski\_distance\_5 }\OperatorTok{=}\NormalTok{ np.power((length\_side\_1}\OperatorTok{**}\DecValTok{5} \OperatorTok{+}\NormalTok{ length\_side\_2}\OperatorTok{**}\DecValTok{5} \OperatorTok{+}\NormalTok{ ... length\_side\_n}\OperatorTok{**}\DecValTok{5}\NormalTok{), }\DecValTok{1}\OperatorTok{/}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+\textbf{NOTE}: You'll often see Minkowski distance used as a parameter
+for any distance-based machine learning algorithms inside
+\texttt{sklearn}.
+\end{quote}
+
+    \hypertarget{generatlized-minkowski-distance-function}{%
+\section{Generatlized Minkowski distance
+function}\label{generatlized-minkowski-distance-function}}
+
+Formula for Minkowski distance:
+
+\[\large d(x,y) = \left(\sum_{i=1}^{n}|x_i - y_i|^c\right)^\frac{1}{c}\]
+
+\begin{itemize}
+\tightlist
+\item
+  Minkowski distance is a formula used to calculate distance between two
+  points.
+\item
+  Manhattan distance is a special case of Minkowski distance where c=1.
+\item
+  Euclidean distance is a special case of Minkowski distance where c=2.
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{c+c1}{\PYZsh{} minkowski distance function that takes 4 arguments: two arrays, the norm to calculate, and verbose (default True)}
+\PY{k}{def} \PY{n+nf}{distance}\PY{p}{(}\PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} ensure numpy arrays}
+    \PY{n}{x1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{x1}\PY{p}{)}
+    \PY{n}{x2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{x2}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} calculate distance}
+    \PY{n}{distance} \PY{o}{=} \PY{p}{(}\PY{n+nb}{sum}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{x1} \PY{o}{\PYZhy{}} \PY{n}{x2}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{n}{c}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{n}{c}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} print verbose}
+    \PY{k}{if} \PY{n}{verbose}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Distance between }\PY{l+s+si}{\PYZob{}}\PY{n}{x1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ and }\PY{l+s+si}{\PYZob{}}\PY{n}{x2}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ is }\PY{l+s+si}{\PYZob{}}\PY{n}{distance}\PY{l+s+si}{:}\PY{l+s+s2}{.2f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    
+    \PY{k}{return} \PY{n}{distance}
+
+\PY{n}{test\PYZus{}point\PYZus{}1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{test\PYZus{}point\PYZus{}2} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{distance}\PY{p}{(}\PY{n}{test\PYZus{}point\PYZus{}1}\PY{p}{,} \PY{n}{test\PYZus{}point\PYZus{}2}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} Expected Output: 5.0}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{distance}\PY{p}{(}\PY{n}{test\PYZus{}point\PYZus{}1}\PY{p}{,} \PY{n}{test\PYZus{}point\PYZus{}2}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} Expected Output: 7.0}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{distance}\PY{p}{(}\PY{n}{test\PYZus{}point\PYZus{}1}\PY{p}{,} \PY{n}{test\PYZus{}point\PYZus{}2}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} Expected Output: 4.497941445275415}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Distance between [1 2] and [4 6] is 5.00
+5.0
+Distance between [1 2] and [4 6] is 7.00
+7.0
+Distance between [1 2] and [4 6] is 4.50
+4.497941445275415
+    \end{Verbatim}
+
+    \hypertarget{finding-the-best-value-of-k}{%
+\section{Finding The Best Value Of
+K}\label{finding-the-best-value-of-k}}
+
+\hypertarget{finding-the-optimal-number-of-neighbors}{%
+\subsection{Finding the optimal number of
+neighbors}\label{finding-the-optimal-number-of-neighbors}}
+
+\begin{itemize}
+\tightlist
+\item
+  The K-Nearest Neighbors algorithm requires selecting a value for K
+\item
+  There is no one best value for K
+\item
+  Strategies can be used to select a good or near optimal value for K
+\end{itemize}
+
+\hypertarget{k-overfitting-and-underfitting}{%
+\subsection{K, overfitting, and
+underfitting}\label{k-overfitting-and-underfitting}}
+
+\begin{itemize}
+\tightlist
+\item
+  A smaller value of K results in a tighter fit of the model in
+  supervised learning.
+\item
+  Overfitting can occur if the model pays too much attention to every
+  detail and creates a complex decision boundary.
+\item
+  Conversely, underfitting occurs if the model is too simplistic.
+\item
+  A visual explanation can help understand this concept.
+\item
+  It's important to find the best value for K by iterating over multiple
+  values and comparing performance at each step.
+\end{itemize}
+
+As you can see from the image above, k=1 and k=3 will provide different
+results!
+
+\hypertarget{iterating-over-values-of-k}{%
+\subsection{Iterating over values of
+K}\label{iterating-over-values-of-k}}
+
+\begin{itemize}
+\tightlist
+\item
+  Use odd values for k in KNN to avoid ties and guesswork
+\item
+  Fit a KNN classifier for each value of K within a minimum and maximum
+  boundary
+\item
+  Generate predictions and evaluate performance metrics for each model
+\item
+  Compare results and choose the model with the lowest overall error or
+  highest overall score
+\item
+  Plot the error for each value of K to find the value where the error
+  is lowest.
+\end{itemize}
+
+\hypertarget{knn-and-the-curse-of-dimensionality}{%
+\subsection{KNN and the curse of
+dimensionality}\label{knn-and-the-curse-of-dimensionality}}
+
+\begin{itemize}
+\tightlist
+\item
+  KNN is not ideal for large datasets or models with high
+  dimensionality.
+\item
+  The time complexity of KNN is exponential, meaning it takes a lot of
+  operations to complete.
+\item
+  For smaller datasets, KNN can work well due to its simplicity.
+\item
+  However, for datasets with millions of rows and thousands of columns,
+  another algorithm may be a better choice as KNN could take years to
+  complete.
+\end{itemize}
+
+    \hypertarget{knn-from-scratch}{%
+\section{KNN From Scratch}\label{knn-from-scratch}}
+
+    To keep things simple, use a helper function, \texttt{euclidean()}, from
+the \texttt{spatial.distance} module of the \texttt{scipy} library.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{spatial}\PY{n+nn}{.}\PY{n+nn}{distance} \PY{k+kn}{import} \PY{n}{euclidean}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{create-the-knn-class}{%
+\subsection{\texorpdfstring{Create the \texttt{KNN}
+class}{Create the KNN class}}\label{create-the-knn-class}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Define the KNN class with two empty methods \PYZhy{} fit and predict}
+\PY{k}{class} \PY{n+nc}{KNN}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf}{fit}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return}
+
+    \PY{k}{def} \PY{n+nf}{predict}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} 
+
+    \PY{k}{def} \PY{n+nf}{closest}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{row}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{complete-the-fit-method}{%
+\subsection{\texorpdfstring{Complete the \texttt{fit()}
+method}{Complete the fit() method}}\label{complete-the-fit-method}}
+
+\begin{itemize}
+\tightlist
+\item
+  When fitting a KNN classifier, you're just storing points and their
+  labels
+\item
+  There's no actual fitting involved, just data storage
+\item
+  The stored data is used to calculate nearest neighbors when predicting
+\end{itemize}
+
+The inputs for this function are:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{self}: since this will be an instance method inside the
+  \texttt{KNN} class
+\item
+  \texttt{X\_train}: an array, each row represents a \emph{vector} for a
+  given point in space\\
+\item
+  \texttt{y\_train}: the corresponding labels for each vector in
+  \texttt{X\_train}. The label at \texttt{y\_train{[}0{]}} is the label
+  that corresponds to the vector at \texttt{X\_train{[}0{]}}, and so on
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{fit}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{X\PYZus{}train} \PY{o}{=} \PY{n}{X\PYZus{}train}
+    \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y\PYZus{}train} \PY{o}{=} \PY{n}{y\PYZus{}train}
+    
+\PY{c+c1}{\PYZsh{} This line updates the knn.fit method to point to the function you\PYZsq{}ve just written}
+\PY{n}{KNN}\PY{o}{.}\PY{n}{fit} \PY{o}{=} \PY{n}{fit}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{helper-functions}{%
+\subsubsection{Helper functions}\label{helper-functions}}
+
+Three helper functions.
+
+\hypertarget{get_distances-function.}{%
+\paragraph{\texorpdfstring{\texttt{\_get\_distances()}
+function.}{\_get\_distances() function.}}\label{get_distances-function.}}
+
+\begin{itemize}
+\tightlist
+\item
+  Take in two arguments: \texttt{self} and \texttt{x}
+\item
+  Create an empty array, \texttt{distances}, to hold all the distances
+  you're going to calculate
+\item
+  Enumerate through every item in \texttt{self.X\_train}. For each item:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Use the \texttt{euclidean()} function to get the distance between x
+    and the current point from \texttt{X\_train}
+  \item
+    Create a tuple containing the index and the distance (in that
+    order!) and append it to the \texttt{distances} array
+  \end{itemize}
+\item
+  Return the \texttt{distances} array when a distance has been generated
+  for all items in \texttt{self.X\_train}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{\PYZus{}get\PYZus{}distances}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{n}{distances} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{ind}\PY{p}{,} \PY{n}{val} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{X\PYZus{}train}\PY{p}{)}\PY{p}{:}
+        \PY{n}{dist\PYZus{}to\PYZus{}i} \PY{o}{=} \PY{n}{euclidean}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{val}\PY{p}{)}
+        \PY{n}{distances}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{(}\PY{n}{ind}\PY{p}{,} \PY{n}{dist\PYZus{}to\PYZus{}i}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{n}{distances}
+
+\PY{c+c1}{\PYZsh{} This line attaches the function you just created as a method to KNN class }
+\PY{n}{KNN}\PY{o}{.}\PY{n}{\PYZus{}get\PYZus{}distances} \PY{o}{=} \PY{n}{\PYZus{}get\PYZus{}distances}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{get_k_nearest-function}{%
+\paragraph{\texorpdfstring{\texttt{\_get\_k\_nearest()}
+function}{\_get\_k\_nearest() function}}\label{get_k_nearest-function}}
+
+\begin{itemize}
+\tightlist
+\item
+  Take three arguments:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{self}
+  \item
+    \texttt{dists}: an array of tuples containing (index, distance),
+    which will be output from the \texttt{\_get\_distances()} method.
+  \item
+    \texttt{k}: the number of nearest neighbors you want to return
+  \end{itemize}
+\item
+  Sort the \texttt{dists} array by distances values, which are the
+  second element in each tuple
+\item
+  Return the first \texttt{k} tuples from the sorted array
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{\PYZus{}get\PYZus{}k\PYZus{}nearest}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{dists}\PY{p}{,} \PY{n}{k}\PY{p}{)}\PY{p}{:}
+    \PY{n}{sorted\PYZus{}dists} \PY{o}{=} \PY{n+nb}{sorted}\PY{p}{(}\PY{n}{dists}\PY{p}{,} \PY{n}{key}\PY{o}{=}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{sorted\PYZus{}dists}\PY{p}{[}\PY{p}{:}\PY{n}{k}\PY{p}{]}
+
+
+\PY{c+c1}{\PYZsh{} This line attaches the function you just created as a method to KNN class }
+\PY{n}{KNN}\PY{o}{.}\PY{n}{\PYZus{}get\PYZus{}k\PYZus{}nearest} \PY{o}{=} \PY{n}{\PYZus{}get\PYZus{}k\PYZus{}nearest}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{get_label_prediction-function}{%
+\paragraph{\texorpdfstring{\texttt{\_get\_label\_prediction()}
+function}{\_get\_label\_prediction() function}}\label{get_label_prediction-function}}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a list containing the labels from \texttt{self.y\_train} for
+  each index in \texttt{k\_nearest} (remember, each item in
+  \texttt{k\_nearest} is a tuple, and the index is stored as the first
+  item in each tuple)
+\item
+  Get the total counts for each label (use \texttt{np.bincount()} and
+  pass in the label array created in the previous step)
+\item
+  Get the index of the label with the highest overall count in counts
+  (use \texttt{np.argmax()} for this, and pass in the counts created in
+  the previous step)
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{\PYZus{}get\PYZus{}label\PYZus{}prediction}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{k\PYZus{}nearest}\PY{p}{)}\PY{p}{:}
+        
+    \PY{n}{labels} \PY{o}{=} \PY{p}{[}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{y\PYZus{}train}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n}{k\PYZus{}nearest}\PY{p}{]}
+    \PY{n}{counts} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{bincount}\PY{p}{(}\PY{n}{labels}\PY{p}{)}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{counts}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} This line attaches the function you just created as a method to KNN class}
+\PY{n}{KNN}\PY{o}{.}\PY{n}{\PYZus{}get\PYZus{}label\PYZus{}prediction} \PY{o}{=} \PY{n}{\PYZus{}get\PYZus{}label\PYZus{}prediction}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Can now complete the predict method.
+
+    \hypertarget{complete-the-predict-method}{%
+\subsection{\texorpdfstring{Complete the \texttt{predict()}
+method}{Complete the predict() method}}\label{complete-the-predict-method}}
+
+This method does all the heavy lifting for KNN, so this will be a bit
+more complex than the \texttt{fit()} method.
+
+\begin{itemize}
+\tightlist
+\item
+  In addition to \texttt{self}, our \texttt{predict} function should
+  take in two arguments:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{X\_test}: the points we want to classify
+  \item
+    \texttt{k}: which specifies the number of neighbors we should use to
+    make the classification. Set \texttt{k=3} as a default, but allow
+    the user to update it if they choose
+  \end{itemize}
+\item
+  For each item:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Calculate the distance to all points in \texttt{X\_train} by using
+    the \texttt{.\_get\_distances()} helper method
+  \item
+    Find the k-nearest points in \texttt{X\_train} by using the
+    \texttt{.\_get\_k\_nearest()} method
+  \item
+    Use the index values contained within the tuples returned by
+    \texttt{.\_get\_k\_nearest()} method to get the corresponding labels
+    for each of the nearest points\\
+  \item
+    Determine which class is most represented in these labels and treat
+    that as the prediction for this point. Append the prediction to
+    \texttt{preds}
+  \end{itemize}
+\item
+  Once a prediction has been generated for every item in
+  \texttt{X\_test}, return \texttt{preds}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{predict}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{k}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{:}
+    \PY{n}{preds} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} Iterate through each item in X\PYZus{}test}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{X\PYZus{}test}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} Get distances between i and each item in X\PYZus{}train}
+        \PY{n}{dists} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}get\PYZus{}distances}\PY{p}{(}\PY{n}{i}\PY{p}{)}
+        \PY{n}{k\PYZus{}nearest} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}get\PYZus{}k\PYZus{}nearest}\PY{p}{(}\PY{n}{dists}\PY{p}{,} \PY{n}{k}\PY{p}{)}
+        \PY{n}{predicted\PYZus{}label} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}get\PYZus{}label\PYZus{}prediction}\PY{p}{(}\PY{n}{k\PYZus{}nearest}\PY{p}{)}
+        \PY{n}{preds}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{predicted\PYZus{}label}\PY{p}{)}
+    \PY{k}{return} \PY{n}{preds}
+
+\PY{c+c1}{\PYZsh{} This line updates the knn.predict method to point to the function you\PYZsq{}ve just written}
+\PY{n}{KNN}\PY{o}{.}\PY{n}{predict} \PY{o}{=} \PY{n}{predict}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{test-the-knn-classifier}{%
+\subsection{Test the KNN classifier}\label{test-the-knn-classifier}}
+
+Note that there are \textbf{\emph{3 classes}} in the Iris dataset,
+making this a multi-categorical classification problem. This means that
+you can't use evaluation metrics that are meant for binary
+classification problems. For this, just stick to accuracy for now.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Import the necessary functions}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{datasets} \PY{k+kn}{import} \PY{n}{load\PYZus{}iris}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{train\PYZus{}test\PYZus{}split}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{accuracy\PYZus{}score}
+
+\PY{n}{iris} \PY{o}{=} \PY{n}{load\PYZus{}iris}\PY{p}{(}\PY{p}{)}
+\PY{n}{data} \PY{o}{=} \PY{n}{iris}\PY{o}{.}\PY{n}{data}
+\PY{n}{target} \PY{o}{=} \PY{n}{iris}\PY{o}{.}\PY{n}{target}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}test} \PY{o}{=} \PY{n}{train\PYZus{}test\PYZus{}split}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{target}\PY{p}{,} \PY{n}{test\PYZus{}size}\PY{o}{=}\PY{l+m+mf}{0.25}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Instantiate and fit KNN}
+\PY{n}{knn} \PY{o}{=} \PY{n}{KNN}\PY{p}{(}\PY{p}{)}
+\PY{n}{knn}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Generate predictions}
+\PY{n}{preds} \PY{o}{=} \PY{n}{knn}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Testing Accuracy: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{accuracy\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{preds}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Expected Output: Testing Accuracy: 0.9736842105263158}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing Accuracy: 0.9736842105263158
+    \end{Verbatim}
+
+    \hypertarget{knn-with-scikit-learn}{%
+\section{KNN With Scikit Learn}\label{knn-with-scikit-learn}}
+
+\hypertarget{why-use-scikit-learn}{%
+\subsection{Why use scikit-learn?}\label{why-use-scikit-learn}}
+
+\begin{itemize}
+\tightlist
+\item
+  Implementing the KNN algorithm is a valuable experience but
+  professional toolsets like scikit-learn are recommended.
+\item
+  Scikit-learn has backend optimizations that make the algorithm faster
+  and more efficient.
+\item
+  Professional toolsets will have best-in-class implementations that a
+  single developer or data scientist cannot rival.
+\item
+  Scikit-learn's KNN implementation is more robust and fast due to
+  clever optimizations like caching distances.
+\end{itemize}
+
+\hypertarget{read-the-sklearn-docs}{%
+\subsection{Read the sklearn docs}\label{read-the-sklearn-docs}}
+
+\begin{itemize}
+\tightlist
+\item
+  Familiarize yourself with documentation for libraries and frameworks
+  you use.
+\item
+  scikit-learn provides high-quality documentation for algorithms.
+\item
+  General documentation pages provide inputs, parameters, outputs, and
+  caveats of any algorithm.
+\item
+  User Guides explain how the algorithm works and how to best use it,
+  complete with sample code.
+\item
+  The scikit-learn user guide for K-Nearest Neighbors includes an image
+  and explanation of how different parameters affect model performance.
+\end{itemize}
+
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html}{Documentation
+Page}
+
+\href{https://scikit-learn.org/stable/modules/neighbors.html\#classification}{User
+Guide}
+
+\hypertarget{best-practices}{%
+\subsection{Best practices}\label{best-practices}}
+
+\begin{itemize}
+\tightlist
+\item
+  Scikit-learn has built-in functions for evaluating models with
+  precision, accuracy, or recall scores.
+\item
+  Focus on practical questions when completing the lab, such as
+  decisions regarding data and predictors.
+\item
+  Determine the optimal parameter values for your model and choose
+  appropriate metrics for evaluation.
+\item
+  Assess whether there is room for improvement with your model and if
+  potential gains are worth the time needed to achieve them.
+\end{itemize}
+
+    \hypertarget{functions-for-improving-knn-performance---find-best-k}{%
+\section{Functions For Improving KNN Performance - find best
+k}\label{functions-for-improving-knn-performance---find-best-k}}
+
+    \hypertarget{function-using-f1-score}{%
+\subsection{Function using f1 score}\label{function-using-f1-score}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{find\PYZus{}best\PYZus{}k}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{min\PYZus{}k}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{max\PYZus{}k}\PY{o}{=}\PY{l+m+mi}{25}\PY{p}{)}\PY{p}{:}
+    \PY{n}{best\PYZus{}k} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{n}{best\PYZus{}score} \PY{o}{=} \PY{l+m+mf}{0.0}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{min\PYZus{}k}\PY{p}{,} \PY{n}{max\PYZus{}k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+        \PY{n}{knn} \PY{o}{=} \PY{n}{KNeighborsClassifier}\PY{p}{(}\PY{n}{n\PYZus{}neighbors}\PY{o}{=}\PY{n}{k}\PY{p}{)}
+        \PY{n}{knn}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}
+        \PY{n}{preds} \PY{o}{=} \PY{n}{knn}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{)}
+        \PY{n}{f1} \PY{o}{=} \PY{n}{f1\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{preds}\PY{p}{)}
+        \PY{k}{if} \PY{n}{f1} \PY{o}{\PYZgt{}} \PY{n}{best\PYZus{}score}\PY{p}{:}
+            \PY{n}{best\PYZus{}k} \PY{o}{=} \PY{n}{k}
+            \PY{n}{best\PYZus{}score} \PY{o}{=} \PY{n}{f1}
+    
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Best Value for k: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{best\PYZus{}k}\PY{p}{)}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{F1\PYZhy{}Score: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{best\PYZus{}score}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{n}{best\PYZus{}k}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{function-using-log-loss}{%
+\subsection{Function using log loss}\label{function-using-log-loss}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} modify find\PYZus{}best\PYZus{}k to find the best value for k using log loss instead of f1\PYZhy{}score}
+\PY{k}{def} \PY{n+nf}{find\PYZus{}best\PYZus{}k}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{min\PYZus{}k}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{max\PYZus{}k}\PY{o}{=}\PY{l+m+mi}{50}\PY{p}{)}\PY{p}{:}
+    \PY{n}{best\PYZus{}k} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{n}{best\PYZus{}score} \PY{o}{=} \PY{l+m+mf}{0.125}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{min\PYZus{}k}\PY{p}{,} \PY{n}{max\PYZus{}k}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+        \PY{n}{knn} \PY{o}{=} \PY{n}{KNeighborsClassifier}\PY{p}{(}\PY{n}{n\PYZus{}neighbors}\PY{o}{=}\PY{n}{k}\PY{p}{)}
+        \PY{n}{knn}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}
+        \PY{n}{preds} \PY{o}{=} \PY{n}{knn}\PY{o}{.}\PY{n}{predict\PYZus{}proba}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{)}
+        \PY{n}{log\PYZus{}loss} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{n}{cross\PYZus{}val\PYZus{}score}\PY{p}{(}\PY{n}{knn}\PY{p}{,} \PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{scoring}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{neg\PYZus{}log\PYZus{}loss}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}
+        \PY{k}{if} \PY{n}{log\PYZus{}loss} \PY{o}{\PYZlt{}} \PY{n}{best\PYZus{}score}\PY{p}{:}
+            \PY{n}{best\PYZus{}k} \PY{o}{=} \PY{n}{k}
+            \PY{n}{best\PYZus{}score} \PY{o}{=} \PY{n}{log\PYZus{}loss}
+    
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Best Value for k: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{best\PYZus{}k}\PY{p}{)}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Log Loss: }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{best\PYZus{}score}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{n}{best\PYZus{}k}
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
